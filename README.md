@@ -1,24 +1,9 @@
-# README
+# syntacticus-api
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is the backend API for syntacticus.org.
 
-Things you may want to cover:
+The exposed API is not meant for public consumption. If you want to use any of the data on syntacticus.org for your own projects download the raw data files from the upstream treebank projects.
 
-* Ruby version
+## TODO
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Add rate limiting

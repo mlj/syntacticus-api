@@ -1,3 +1,10 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  resources :sentences, only: [:show]
+  resources :sources, only: [:index, :show]
+  resources :tokens, only: [:index]
+  resources :dictionaries, only: [:index] do
+    resources :lemmas, only: [:index, :show]
+  end
+  resources :chunks, only: [:show]
+  resources :aligned_chunks, only: [:show]
 end

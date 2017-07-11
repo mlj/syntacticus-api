@@ -1,0 +1,2 @@
+class AlignedChunk < ApplicationRecord
+end
