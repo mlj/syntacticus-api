@@ -39,6 +39,6 @@ module SyntacticusApi
       end
     end
 
-    #config.middleware.use Rack::Attack
+    config.middleware.use Rack::Attack
   end
 end
