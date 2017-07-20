@@ -302,13 +302,13 @@ module TokenIndexer
 end
 
 module SentenceIndexer
-  def self.index!(treebank, version, source, sentence)
+  def self.index!(treebank, version, source, sentence, db_source)
     gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
     previous_sentence_external_id, next_sentence_external_id = nil, nil # TODO
     data = make_sentence(source.language, sentence, previous_sentence_external_id, next_sentence_external_id)
 #        svg_graph = PROIEL::Visualization::Graphviz.generate(:classic, s, :svg)
 
-    Sentence.create!({ gid: gid }.merge(data))
+    db_source.sentences.create!({ gid: gid }.merge(data))
   end
 
   def self.make_sentence(language, sentence, previous_sentence_external_id, next_sentence_external_id)
@@ -664,7 +664,7 @@ module SourceIndexer
     Sentence.transaction do
       source.sentences.each do |sentence|
         #svg_graph = PROIEL::Visualization::Graphviz.generate(:classic, s, :svg)
-        SentenceIndexer.index!(treebank, version, source, sentence)
+        SentenceIndexer.index!(treebank, version, source, sentence, s)
         pbar.increment
       end
     end

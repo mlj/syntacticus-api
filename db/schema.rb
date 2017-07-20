@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20170711162858) do
   end
 
   create_table "sentences", force: :cascade do |t|
+    t.integer "source_id"
     t.text "gid"
     t.text "previous_gid"
     t.text "next_gid"
