@@ -81,11 +81,13 @@ ActiveRecord::Schema.define(version: 20170711162858) do
     t.string "abbrev_text_before"
     t.string "abbrev_text_after"
     t.integer "frame_id"
-    t.index ["form"], name: "index_tokes_on_form"
     t.index ["id"], name: "index_tokes_on_id"
+    t.index ["language"], name: "index_tokes_on_language"
+    t.index ["form"], name: "index_tokes_on_form"
     t.index ["lemma"], name: "index_tokes_on_lemma"
-    t.index ["morphology"], name: "index_tokes_on_morphology"
     t.index ["part_of_speech"], name: "index_tokes_on_part_of_speech"
+    t.index ["morphology"], name: "index_tokes_on_morphology"
+    t.index ["frame_id"], name: "index_tokes_on_frame_id"
   end
 
 end
