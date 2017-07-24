@@ -55,7 +55,6 @@ ActiveRecord::Schema.define(version: 20170711162858) do
 
   create_table "sources", force: :cascade do |t|
     t.text "gid"
-    t.text "aligned_gid"
     t.text "title"
     t.text "author"
     t.text "language"
@@ -64,7 +63,7 @@ ActiveRecord::Schema.define(version: 20170711162858) do
     t.integer "sentence_count"
     t.integer "token_count"
     t.text "chunks"
-    t.text "aligned_chunks"
+    t.text "alignment"
     t.index ["gid"], name: "index_sources_on_gid", unique: true
   end
 

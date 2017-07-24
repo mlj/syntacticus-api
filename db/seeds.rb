@@ -636,7 +636,7 @@ module AlignedSourceIndexer
 end
 
 module SourceIndexer
-  def self.index!(treebank, version, source, aligned_chunk_ids = [])
+  def self.index!(treebank, version, source, alignment = {})
     gid = GlobalIdentifiers.source_gid(treebank, version, source.id)
 
     puts "Indexing #{gid}..."
@@ -657,7 +657,7 @@ module SourceIndexer
                        sentence_count: source.sentences.count,
                        token_count: source.tokens.count,
                        chunks: chunk_ids.to_json,
-                       aligned_chunks: aligned_chunk_ids.to_json)
+                       alignment: alignment.to_json)
 
     pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: 'Sentences', total: source.sentences.count
 
@@ -736,9 +736,17 @@ TREEBANKS.each do |(treebank, version, filenames)|
 
   tb.sources.each do |source|
     if source.alignment_id
-      aligned_chunk_ids = AlignedSourceIndexer.index!(treebank, version, tb.find_source(source.alignment_id), source)
+      aligned_source = tb.find_source(source.alignment_id)
+      aligned_chunk_ids = AlignedSourceIndexer.index!(treebank, version, aligned_source, source)
 
-      SourceIndexer.index!(treebank, version, source, aligned_chunk_ids)
+      SourceIndexer.index!(treebank, version, source,
+                           {
+                             gid: GlobalIdentifiers.source_gid(treebank, version, aligned_source.id),
+                             title: aligned_source.title,
+                             author: aligned_source.author,
+                             language: aligned_source.language,
+                             chunk_ids: aligned_chunk_ids,
+                           })
     else
       SourceIndexer.index!(treebank, version, source)
     end

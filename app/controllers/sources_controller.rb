@@ -11,7 +11,7 @@ class SourcesController < ApplicationController
 
     render json: shared(source).merge({
       chunks: JSON.parse(source.chunks),
-      aligned_chunks: JSON.parse(source.aligned_chunks),
+      alignment: JSON.parse(source.alignment),
     })
   end
 
@@ -20,7 +20,6 @@ class SourcesController < ApplicationController
   def shared(source)
     {
       id: source.gid,
-      aligned_gid: source.aligned_gid,
       title: source.title,
       author: source.author,
       language: source.language,
