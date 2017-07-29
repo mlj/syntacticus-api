@@ -17,7 +17,7 @@ class SentencesController < ApplicationController
       next_gid: sentence.next_gid,
       source: {
         id: sentence.source.gid,
-        aligned_gid: sentence.source.aligned_gid,
+        aligned_gid: JSON.parse(sentence.source.alignment)[:gid],
         title: sentence.source.title,
         author: sentence.source.author,
         license: sentence.source.license,
