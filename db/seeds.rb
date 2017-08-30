@@ -302,9 +302,11 @@ module TokenIndexer
 end
 
 module SentenceIndexer
-  def self.index!(treebank, version, source, sentence, db_source)
+  def self.index!(treebank, version, source, sentence, db_source, prev_sentence, next_sentence)
     gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
-    previous_sentence_external_id, next_sentence_external_id = nil, nil # TODO
+    previous_sentence_external_id, next_sentence_external_id =
+      prev_sentence ? GlobalIdentifiers.sentence_gid(treebank, version, source.id, prev_sentence.id) : nil,
+      next_sentence ? GlobalIdentifiers.sentence_gid(treebank, version, source.id, next_sentence.id) : nil
     data = make_sentence(source.language, sentence, previous_sentence_external_id, next_sentence_external_id)
 #        svg_graph = PROIEL::Visualization::Graphviz.generate(:classic, s, :svg)
 
@@ -662,9 +664,11 @@ module SourceIndexer
     pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: 'Sentences', total: source.sentences.count
 
     Sentence.transaction do
-      source.sentences.each do |sentence|
+      # FIXME: This is subobtimal since it expands the whole sequence of sentences.
+      # If there are no sentences, we get [nil, nil], which leads each_cons(3) not to call the block, which is what we want.
+      [nil, *source.sentences, nil].each_cons(3) do |prev_sentence, sentence, next_sentence|
         #svg_graph = PROIEL::Visualization::Graphviz.generate(:classic, s, :svg)
-        SentenceIndexer.index!(treebank, version, source, sentence, s)
+        SentenceIndexer.index!(treebank, version, source, sentence, s, prev_sentence, next_sentence)
         pbar.increment
       end
     end
