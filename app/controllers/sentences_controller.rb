@@ -12,7 +12,20 @@ class SentencesController < ApplicationController
       text: sentence.text,
       language: sentence.language,
       citation: sentence.citation,
-      tokens: JSON.parse(sentence.tokens),
+      # FIXME
+      tokens: JSON.parse(sentence.tokens).map { |t|
+        l = t['lemma']
+
+        if l
+          l = l.split('#')
+          t.merge({
+            'lemma' => l[0],
+            'variant' => l[1],
+          })
+        else
+          t
+        end
+      },
       previous_gid: sentence.previous_gid,
       next_gid: sentence.next_gid,
       source: {
