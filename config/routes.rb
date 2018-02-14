@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :sentences, only: [:show]
+  resources :graphs, only: [:show]
   resources :sources, only: [:index, :show]
   resources :tokens, only: [:index]
   resources :dictionaries, only: [:index] do
