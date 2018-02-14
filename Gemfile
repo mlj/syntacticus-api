@@ -43,6 +43,5 @@ gem 'rack-cors'
 
 # For the database seeder
 gem 'proiel'
-gem 'proiel-valency'
 gem 'ruby-progressbar'
 gem 'colorize'
