@@ -36,7 +36,7 @@ class GraphsController < ApplicationController
     sentence = Sentence.find_by_gid(params[:id])
 
     graph = GraphAdapter.new(sentence)
-    image = PROIEL::Visualization::Graphviz.generate(:modern, graph, :svg)
+    image = PROIEL::Visualization::Graphviz.generate(params[:layout] || :modern, graph, :svg, direction: params[:direction] || 'TD')
     send_data(image, type: 'image/svg', disposition: 'inline')
   end
 end
