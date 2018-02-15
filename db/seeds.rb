@@ -301,6 +301,29 @@ module TokenIndexer
   end
 end
 
+def make_token_attributes(sentence, language = nil)
+  sentence.tokens.map do |t|
+    glosses = language ? get_glosses(language, t.lemma, t.part_of_speech) : nil
+
+    m = {
+        id: t.id,
+        form: t.form,
+        lemma: t.lemma,
+        part_of_speech: t.part_of_speech,
+        morphology: t.morphology,
+        head_id: t.head_id,
+        relation: t.relation,
+      }
+
+    m[:glosses] = glosses unless glosses.nil? or glosses.empty?
+    m[:presentation_after] = t.presentation_after unless t.presentation_after.nil?
+    m[:presentation_before] = t.presentation_before unless t.presentation_before.nil?
+    m[:empty_token_sort] = t.empty_token_sort unless t.empty_token_sort.nil?
+    m[:slashes] = t.slashes unless t.slashes.empty?
+    m
+  end
+end
+
 module SentenceIndexer
   def self.index!(treebank, version, source, sentence, db_source, prev_sentence, next_sentence)
     gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
@@ -314,27 +337,7 @@ module SentenceIndexer
   end
 
   def self.make_sentence(language, sentence, previous_sentence_external_id, next_sentence_external_id)
-    token_attributes =
-      sentence.tokens.map do |t|
-        glosses = get_glosses(language, t.lemma, t.part_of_speech)
-        m =
-          {
-            id: t.id,
-            form: t.form,
-            lemma: t.lemma,
-            part_of_speech: t.part_of_speech,
-            morphology: t.morphology,
-            head_id: t.head_id,
-            relation: t.relation,
-          }
-
-        m[:glosses] = glosses unless glosses.empty?
-        m[:presentation_after] = t.presentation_after unless t.presentation_after.nil?
-        m[:presentation_before] = t.presentation_before unless t.presentation_before.nil?
-        m[:empty_token_sort] = t.empty_token_sort unless t.empty_token_sort.nil?
-        m[:slashes] = t.slashes unless t.slashes.empty?
-        m
-      end
+    token_attributes = make_token_attributes(sentence, language)
 
     {
       text: sentence.printable_form,
@@ -371,7 +374,46 @@ module AlignedSourceIndexer
       chunk_ids << new_chunk.id
     end
 
+    graph_pairs(treebank, version, alignment, source, matrix) do |data, sentence_gids|
+      sentence_gids.each do |sentence_gid|
+        AlignedGraph.create!(sentence_gid: sentence_gid, data: data.to_json)
+      end
+    end
+
     chunk_ids
+  end
+
+  def self.graph_pairs(treebank, version, alignment, source, matrix)
+    matrix.each do |row|
+      left =
+        row[:original].map do |sentence_id|
+          sentence = alignment.treebank.find_sentence(sentence_id)
+          gid = GlobalIdentifiers.sentence_gid(treebank, version, alignment.id, sentence.id)
+          token_attributes = make_token_attributes(sentence)
+          # FIXME: we don't need all these attributes in token_attributes
+          token_attributes
+        end
+
+      right =
+        row[:translation].map do |sentence_id|
+          sentence = source.treebank.find_sentence(sentence_id)
+          gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
+          token_attributes = make_token_attributes(sentence)
+          # FIXME: we don't need all these attributes in token_attributes
+          token_attributes
+        end
+
+      token_alignments = []
+
+      row[:translation].each do |sentence_id|
+        sentence = source.treebank.find_sentence(sentence_id)
+        token_alignments += sentence.tokens.map { |t| [t.alignment_id, t.id] }
+      end
+
+      sentence_ids = row[:translation].map { |sentence_id| GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence_id) }
+
+      yield [{ l: left, r: right, a: token_alignments }, sentence_ids]
+    end
   end
 
   def self.html_chunks(treebank, version, alignment, source, matrix, max_chunk_length = 5000)

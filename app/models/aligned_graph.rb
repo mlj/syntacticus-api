@@ -1,0 +1,2 @@
+class AlignedGraph < ApplicationRecord
+end

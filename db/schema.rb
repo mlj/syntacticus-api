@@ -17,6 +17,12 @@ ActiveRecord::Schema.define(version: 20170711162858) do
     t.text "data"
   end
 
+  create_table "aligned_graphs", force: :cascade do |t|
+    t.text "sentence_gid"
+    t.text "data"
+    t.index ["gid"], name: "index_aligned_graphs_on_gid" #FIXME: why not?, unique: true
+  end
+
   create_table "chunks", force: :cascade do |t|
     t.integer "source_id"
     t.text "data"
