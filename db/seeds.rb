@@ -406,7 +406,7 @@ module AlignedSourceIndexer
 
       row[:translation].each do |sentence_id|
         sentence = source.treebank.find_sentence(sentence_id)
-        token_alignments += sentence.tokens.reject { |t| t.alignment_id.nil? }.map { |t| [t.alignment_id, t.id] }
+        token_alignments += sentence.tokens.select(&:alignment_id).map { |t| [t.alignment_id, t.id] }
       end
 
       sentence_ids = row[:translation].map { |sentence_id| GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence_id) }
