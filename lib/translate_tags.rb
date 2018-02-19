@@ -23,7 +23,6 @@ INFLECTION = {"n"=>"non-inflecting","i"=>""}
 
 def translate_morphology(tag)
   if tag
-    puts tag
     person, number, tense, mood, voice, gender, kase, degree, strength, inflection = tag.split(//)
     [PERSON[person], NUMBER[number], TENSE[tense], MOOD[mood], VOICE[voice], GENDER[gender], CASE[kase], DEGREE[degree], STRENGTH[strength], INFLECTION[inflection]].compact.reject(&:empty?).join(',')
   else
