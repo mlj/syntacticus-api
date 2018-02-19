@@ -1,3 +1,5 @@
+require 'translate_tags'
+
 class GraphsController < ApplicationController
   class GraphAdapter
     attr_reader :tokens
@@ -15,8 +17,8 @@ class GraphsController < ApplicationController
           o.relation = t['relation']
           o.form = t['form']
           o.lemma = t['lemma']
-          o.part_of_speech = t['part_of_speech']
-          o.morphology = t['morphology']
+          o.part_of_speech = translate_part_of_speech(t['part_of_speech'])
+          o.morphology = translate_morphology(t['morphology'])
           o.empty_token_sort = t['empty_token_sort']
           o.relation = t['relation']
           o.head_id = t['head_id']
