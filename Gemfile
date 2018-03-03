@@ -42,6 +42,6 @@ gem 'rack-attack'
 gem 'rack-cors'
 
 # For the database seeder
-gem 'proiel'
+gem 'proiel', '~> 1.3'
 gem 'ruby-progressbar'
 gem 'colorize'
