@@ -26,34 +26,6 @@ module PROIEL::Printing
   end
 end
 
-# Methods for identifying homographs
-module PROIEL::Homographs
-  def self.homographs?(lemma1, lemma2)
-    if lemma1.is_a?(String) and lemma2.is_a?(String)
-      lemma1 == lemma2
-    else
-      raise ArgumentError, 'lemmas expected'
-    end
-  end
-
-  def self.set_homographs!(dictionary)
-    m = {}
-
-    dictionary.map do |_, entry|
-      m[entry[:lemma]] ||= []
-      m[entry[:lemma]] << [entry[:lemma], entry[:part_of_speech]].join(',')
-    end
-
-    m.values.each do |encoded_lemmas|
-      if encoded_lemmas.length > 1
-        encoded_lemmas.each do |encoded_lemma|
-          dictionary[encoded_lemma][:homographs] = encoded_lemmas.reject { |e| e == encoded_lemma }
-        end
-      end
-    end
-  end
-end
-
 module PROIEL::CSV
   def self.read_csv(filename, separator: ',', &block)
     raise ArgumentError, 'filename expected' unless filename.is_a?(String)
@@ -65,158 +37,79 @@ module PROIEL::CSV
   end
 end
 
-# ----
-
 CHRONOLOGY = {}
 
 PROIEL::CSV.read_csv('lib/dates.tsv', separator: "\t") do |row|
   CHRONOLOGY[row.id] = {
-    text: PROIEL::Chronology.midpoint(row.text),
+    t: PROIEL::Chronology.midpoint(row.text),
   }
 end
 
 PROIEL::CSV.read_csv('lib/orv_text_dates_standard.csv', separator: ';') do |row|
   CHRONOLOGY[row.id] = {
-    text: PROIEL::Chronology.midpoint(row.composition),
-    ms: PROIEL::Chronology.midpoint(row.manuscript),
+    t: PROIEL::Chronology.midpoint(row.composition),
+    m: PROIEL::Chronology.midpoint(row.manuscript),
   }
 end
 
 module DictionaryIndexer
-  def self.index!(treebank, version, language, sources)
+  def self.index!(treebank, version, language, dictionary)
     gid = GlobalIdentifiers.dictionary_gid(treebank, version, language)
 
     puts "Indexing #{gid}..."
 
-    lemmata = {}
-    sources.each do |source|
-      source.tokens.each do |token|
-        lemmata[token.lemma] = true if token.lemma
-      end
-    end
+    Dictionary.transaction do
+      d = Dictionary.create!(gid: gid, language: dictionary.language, license: 'CC BY-NC-SA 4.0', lemma_count: dictionary.n)
 
-    lemma_count = lemmata.count
+      pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: language, total: dictionary.n
+      dictionary.lemmata.each do |lemma, x|
+        x.each do |part_of_speech, l|
+          data = {
+            language: language,
+            lemma: lemma,
+            part_of_speech: part_of_speech,
+          }
 
-    d = Dictionary.create!(gid: gid,
-                           language: language,
-                           license: 'CC BY-NC-SA 4.0',
-                           lemma_count: lemma_count)
-
-    puts "Building valency lexica...".green
-    lexica = build_valency_lexica(language, sources)
-
-    dictionaries = {}
-
-    puts "Indexing dictionaries...".green
-    sources.each do |source|
-      index_dictionary(source, dictionaries)
-    end
-
-    puts "Looking for homographs...".green
-    dictionaries.each do |_, dictionary|
-      PROIEL::Homographs.set_homographs!(dictionary)
-    end
-
-    puts "Saving dictionaries...".green
-    dictionaries.each do |language, dictionary|
-      lexicon = lexica[language]
-      pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: language, total: dictionary.keys.count
-
-      Dictionary.transaction do
-        dictionary.sort_by { |_, data| data[:lemma] }.each do |_, data|
           data[:distribution] =
-            data[:distribution].map do |s, n|
-              { id: s, n: n, chronology: CHRONOLOGY[s] || { text: 0, ms: 0 } }
+            l.distribution.map do |id, n|
+              { id: id, n: n, chronology: CHRONOLOGY[id] || { t: 0, m: 0 } }
             end
 
-          data[:glosses] = get_glosses(language, data[:lemma], data[:part_of_speech])
+          unless l.valency.empty?
+            data[:valency] = []
 
-          if data[:part_of_speech] == 'V-'
-            valency = lexicon.lookup(data[:lemma], data[:part_of_speech])
+            l.valency.each do |frame|
+              partitions = {}
 
-            data[:valency] =
-              valency.map do |v|
-                partitions =
-                  v[:tokens].map do |partition, ids|
-                    if ids.empty?
-                      nil
-                    else
-                      GLOBAL_STATE[:frame_id] += 1
-                      frame_id = GLOBAL_STATE[:frame_id]
-                      ids.each { |t| TOKEN_FRAME_MAP[t] = frame_id }
-
-                      [partition, { frame_id: frame_id, n: ids.length } ]
-                    end
-                  end.compact.to_h
-
-                { arguments: v[:arguments], partitions: partitions }
+              frame[:tokens].each do |t|
+                partitions[t[:flags]] ||= []
+                partitions[t[:flags]] << t[:idref]
               end
+
+              simplified_partitions =
+                partitions.map do |flags, idrefs|
+                  GLOBAL_STATE[:frame_id] += 1
+                  frame_id = GLOBAL_STATE[:frame_id]
+                  idrefs.each { |t| TOKEN_FRAME_MAP[t.to_i] = frame_id }
+                  [flags, { frame_id: frame_id, n: idrefs.length } ]
+                end.to_h
+
+              data[:valency] << { arguments: frame[:arguments], partitions: simplified_partitions }
+            end
           end
 
-          d.lemmas.create! lemma: data[:lemma],
-            part_of_speech: data[:part_of_speech],
-            glosses: data[:glosses].to_json,
-            data: data.to_json,
-            language: language
+          data[:paradigm] = l.paradigm unless l.paradigm.empty?
+          data[:homographs] = l.homographs unless l.homographs.empty?
+          data[:glosses] = l.glosses unless l.glosses.empty?
+
+          d.lemmas.create! lemma: lemma, part_of_speech: part_of_speech, glosses: l.glosses.to_json, language: language, data: data.to_json
 
           pbar.increment
         end
       end
     end
   end
-
-  private
-
-  def self.index_token_lemma(language, dictionary, token)
-    if token.lemma and token.part_of_speech
-      encoded_lemma = [token.lemma, token.part_of_speech].join(',')
-
-      dictionary[encoded_lemma] ||= {
-        language: language,
-        lemma: token.lemma,
-        part_of_speech: token.part_of_speech,
-        distribution: {},
-        glosses: [],
-        homographs: [],
-        paradigm: {},
-      }
-
-      lemma = dictionary[encoded_lemma]
-
-      lemma[:paradigm][token.morphology] ||= {}
-      lemma[:paradigm][token.morphology][token.form] ||= 0
-      lemma[:paradigm][token.morphology][token.form] += 1
-
-      lemma[:distribution][token.source.id] ||= 0
-      lemma[:distribution][token.source.id] += 1
-    end
-  end
-
-
-  def self.build_valency_lexica(language, sources)
-    {}.tap do |lexica|
-      sources.each do |source|
-        next unless source.language == language
-
-        lexica[source.language] ||= PROIEL::Valency::Lexicon.new
-        lexica[source.language].add_source!(source)
-      end
-    end
-  end
-
-  def self.index_dictionary(source, dictionaries)
-    pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: source.id, total: source.tokens.count
-
-    dictionary = (dictionaries[source.language] ||= {})
-
-    source.tokens.each do |token|
-      index_token_lemma(source.language, dictionary, token)
-      pbar.increment
-    end
-  end
 end
-
-# ----
 
 # TODO
 ORV_GLOSSES = {}
@@ -253,9 +146,6 @@ def self.make_schema(tb)
     end
   end
 end
-
-# ---------------------
-
 
 # TODO
 TOKEN_FRAME_MAP = {}
@@ -549,9 +439,10 @@ module SourceIndexer
 end
 
 TREEBANKS = [
-  ['proiel', 20170214, Dir[File.join('..', 'proiel-treebank', '*.xml')]],
-  ['iswoc',  20160620, Dir[File.join('..', 'iswoc-treebank',  '*.xml')]],
-  ['torot',  20170213, Dir[File.join('..', 'torot-treebank',  '*.xml')]],
+  ['syntacticus', 20180303, Dir[File.join('..', 'syntacticus-dictionaries', '*.xml')]],
+  ['proiel',      20170214, Dir[File.join('..', 'proiel-treebank',          '*.xml')]],
+  ['iswoc',       20160620, Dir[File.join('..', 'iswoc-treebank',           '*.xml')]],
+  ['torot',       20170213, Dir[File.join('..', 'torot-treebank',           '*.xml')]],
 ]
 
 TREEBANKS.each do |(treebank, version, filenames)|
@@ -565,8 +456,8 @@ TREEBANKS.each do |(treebank, version, filenames)|
   GLOBAL_STATE[:frame_id] = Token.maximum(:frame_id) || 0
   puts "Initialising with #{GLOBAL_STATE.inspect}"
 
-  tb.sources.group_by(&:language).each do |language, sources|
-    DictionaryIndexer.index!(treebank, version, language, sources)
+  tb.dictionaries.each do |dictionary|
+    DictionaryIndexer.index!(treebank, version, dictionary.language, dictionary)
   end
 
   tb.sources.each do |source|
