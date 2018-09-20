@@ -15,6 +15,9 @@ TREEBANKS = [
   ['torot',       20180919, Dir['../syntacticus-depot/torot-20180919.xml']],
 ]
 
+# Silence logging during seeding
+ActiveRecord::Base.logger.level = :error
+
 module PROIEL::Printing
   def self.token_in_context(s, t)
     n = s.tokens.each_with_index.find { |x, i| t == x }.last
