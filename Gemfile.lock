@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/proiel/proiel
+  revision: 24dbafa3004720d936894349eb3926c8c0f8a7c1
+  ref: 24dbafa3004720d936894349eb3926c8c0f8a7c1
+  specs:
+    proiel (1.3.0)
+      builder (~> 3.2)
+      json (~> 1.8)
+      memoist (~> 0.12)
+      nokogiri (~> 1.8)
+      sax-machine (~> 1.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -68,12 +80,6 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    proiel (1.3.0)
-      builder (~> 3.2)
-      json (~> 1.8)
-      memoist (~> 0.12)
-      nokogiri (~> 1.8)
-      sax-machine (~> 1.3)
     puma (3.12.0)
     rack (2.0.5)
     rack-attack (5.4.0)
@@ -139,7 +145,7 @@ DEPENDENCIES
   byebug
   colorize
   listen (>= 3.0.5, < 3.2)
-  proiel (~> 1.3)
+  proiel!
   puma (~> 3.7)
   rack-attack
   rack-cors
