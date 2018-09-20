@@ -7946,7 +7946,6 @@
 {:original=>[26371], :translation=>[27043]}
 {:original=>[63920], :translation=>[27044]}
 {:original=>[26372], :translation=>[27045]}
-{:original=>[], :translation=>[27046]}
 {:original=>[26374], :translation=>[27048]}
 {:original=>[26375], :translation=>[27049]}
 {:original=>[63921], :translation=>[27050]}
@@ -9811,7 +9810,7 @@
 {:original=>[], :translation=>[32905]}
 {:original=>[], :translation=>[32906]}
 {:original=>[], :translation=>[32926]}
-{:original=>[], :translation=>[32927]}
+{:original=>[32908], :translation=>[32927]}
 {:original=>[], :translation=>[32928]}
 {:original=>[], :translation=>[32930]}
 {:original=>[], :translation=>[32931]}

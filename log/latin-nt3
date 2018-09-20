@@ -8157,7 +8157,6 @@
 {:original=>[63920], :translation=>[27044]}
 {:original=>[26372], :translation=>[27045]}
 {:original=>[26373], :translation=>[]}
-{:original=>[], :translation=>[27046]}
 {:original=>[26374], :translation=>[27048]}
 {:original=>[26375], :translation=>[27049]}
 {:original=>[63921], :translation=>[27050]}
@@ -11012,9 +11011,6 @@
 {:original=>[32152], :translation=>[]}
 {:original=>[32153], :translation=>[]}
 {:original=>[32875], :translation=>[]}
-{:original=>[32923], :translation=>[]}
-{:original=>[57047], :translation=>[]}
-{:original=>[57048], :translation=>[]}
 {:original=>[], :translation=>[31417]}
 {:original=>[], :translation=>[31449]}
 {:original=>[], :translation=>[31463]}
@@ -11059,7 +11055,10 @@
 {:original=>[], :translation=>[32905]}
 {:original=>[], :translation=>[32906]}
 {:original=>[], :translation=>[32926]}
-{:original=>[], :translation=>[32927]}
+{:original=>[32908], :translation=>[32927]}
+{:original=>[32923], :translation=>[]}
+{:original=>[57047], :translation=>[]}
+{:original=>[57048], :translation=>[]}
 {:original=>[], :translation=>[32928]}
 {:original=>[], :translation=>[32930]}
 {:original=>[], :translation=>[32931]}

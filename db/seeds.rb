@@ -1,7 +1,5 @@
 require 'json'
-require 'fileutils'
 require 'csv'
-
 require 'colorize'
 require 'ruby-progressbar'
 require 'proiel'
@@ -240,21 +238,12 @@ module SentenceIndexer
 end
 
 module AlignedSourceIndexer
-  # FIXME
-  BLACKLIST = [
-    # Lacuna in Gothic NT
-    47183, 47184,
-
-    # ? in Armenian NT
-    75413, 61271, 61428, 61747, 64309, 61748, 62506,
-  ]
-
   def self.index!(treebank, version, alignment, source)
-    gid = GlobalIdentifiers.source_gid(treebank, version, alignment.id)
+    matrix = []
 
-    puts "Indexing alignment of #{gid}..."
-
-    matrix = PROIEL::Alignment::Builder.compute_matrix(alignment, source, BLACKLIST, 'log')
+    CSV.foreach("#{treebank}-#{version}-#{source.alignment_id}-#{source.id}.tsv", headers: true, col_sep: "\t", header_converters: :symbol) do |row|
+      matrix << row.to_h.map { |k, v| [k, (v || '').split(',').map(&:to_i)] }.to_h
+    end
 
     chunk_ids = []
 
@@ -440,9 +429,12 @@ end
 
 TREEBANKS = [
   ['syntacticus', 20180303, Dir[File.join('..', 'syntacticus-dictionaries', '*.xml')]],
+  #['proiel',      20170214, Dir[File.join('..', 'syntacticus-depot/proiel-20170214.xml')]],
   ['proiel',      20170214, Dir[File.join('..', 'proiel-treebank',          '*.xml')]],
-  ['iswoc',       20160620, Dir[File.join('..', 'iswoc-treebank',           '*.xml')]],
-  ['torot',       20170213, Dir[File.join('..', 'torot-treebank',           '*.xml')]],
+  #['proiel',      20180408, Dir[File.join('..', 'proiel-treebank',          '*.xml')]],
+  ['iswoc',       20160620, Dir[File.join('..', 'syntacticus-depot/iswoc-20160620.xml')]],
+  ['torot',       20170213, Dir[File.join('..', 'syntacticus-depot/torot-20170213.xml')]],
+  #['torot',       20180323, Dir[File.join('..', 'torot-treebank',           '*.xml')]],
 ]
 
 TREEBANKS.each do |(treebank, version, filenames)|
