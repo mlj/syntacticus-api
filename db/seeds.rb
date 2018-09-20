@@ -38,11 +38,20 @@ module PROIEL::Printing
 end
 
 module PROIEL::CSV
-  def self.read_csv(filename, separator: ',', &block)
+  def self.read_tsv(filename, &block)
     raise ArgumentError, 'filename expected' unless filename.is_a?(String)
     raise ArgumentError, 'file not found' unless File.exists?(filename)
 
-    CSV.foreach(filename, headers: true, encoding: 'utf-8', col_sep: separator) do |row|
+    CSV.foreach(filename, headers: true, encoding: 'utf-8', col_sep: "\t", quote_char: "\b") do |row|
+      yield OpenStruct.new(row.to_h.map { |k, v| [k.downcase, v] }.to_h)
+    end
+  end
+
+  def self.read_csv(filename, separator: ',', quote_char: '"', &block)
+    raise ArgumentError, 'filename expected' unless filename.is_a?(String)
+    raise ArgumentError, 'file not found' unless File.exists?(filename)
+
+    CSV.foreach(filename, headers: true, encoding: 'utf-8', col_sep: separator, quote_char: quote_char) do |row|
       yield OpenStruct.new(row.to_h.map { |k, v| [k.downcase, v] }.to_h)
     end
   end
@@ -61,6 +70,8 @@ PROIEL::CSV.read_csv('lib/orv_text_dates_standard.csv', separator: ';') do |row|
     t: PROIEL::Chronology.midpoint(row.composition),
     m: PROIEL::Chronology.midpoint(row.manuscript),
   }
+rescue ArgumentError
+  STDERR.puts "Bad chronology #{row}"
 end
 
 module DictionaryIndexer
@@ -126,12 +137,12 @@ end
 ORV_GLOSSES = {}
 
 # TODO
-PROIEL::CSV.read_csv('lib/glosses_checked.csv', separator: ';') do |row|
-  key = ['orv', row.lemma, row.pos].join(',')
+PROIEL::CSV.read_tsv('../syntacticus-extra-data/orv-glosses.tsv') do |row|
+  key = ['orv', row.lemma, row.part_of_speech].join(',')
   STDERR.puts "Warning: repeated gloss #{key}" if ORV_GLOSSES.key?(key)
   ORV_GLOSSES[key] = {
-    eng: row.gloss,
-    rus: row["russian gloss"]
+    eng: row.eng,
+    rus: row.rus,
   }
 end
 
