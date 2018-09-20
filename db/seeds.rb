@@ -5,6 +5,16 @@ require 'ruby-progressbar'
 require 'proiel'
 require 'proiel/valency'
 
+TREEBANKS = [
+  ['syntacticus', 20180303, Dir['../syntacticus-dictionaries/*.xml']],
+  ['iswoc',       20160620, Dir['../syntacticus-depot/iswoc-20160620.xml']],
+  ['proiel',      20170214, Dir['../syntacticus-depot/proiel-20170214.xml']],
+  ['proiel',      20180408, Dir['../syntacticus-depot/proiel-20180408.xml']],
+  ['torot',       20170213, Dir['../syntacticus-depot/torot-20170213.xml']],
+  ['torot',       20180323, Dir['../syntacticus-depot/torot-20180323.xml']],
+  ['torot',       20180919, Dir['../syntacticus-depot/torot-20180919.xml']],
+]
+
 module PROIEL::Printing
   def self.token_in_context(s, t)
     n = s.tokens.each_with_index.find { |x, i| t == x }.last
@@ -426,16 +436,6 @@ module SourceIndexer
     yield chunk unless chunk.empty?
   end
 end
-
-TREEBANKS = [
-  ['syntacticus', 20180303, Dir[File.join('..', 'syntacticus-dictionaries', '*.xml')]],
-  #['proiel',      20170214, Dir[File.join('..', 'syntacticus-depot/proiel-20170214.xml')]],
-  ['proiel',      20170214, Dir[File.join('..', 'proiel-treebank',          '*.xml')]],
-  #['proiel',      20180408, Dir[File.join('..', 'proiel-treebank',          '*.xml')]],
-  ['iswoc',       20160620, Dir[File.join('..', 'syntacticus-depot/iswoc-20160620.xml')]],
-  ['torot',       20170213, Dir[File.join('..', 'syntacticus-depot/torot-20170213.xml')]],
-  #['torot',       20180323, Dir[File.join('..', 'torot-treebank',           '*.xml')]],
-]
 
 TREEBANKS.each do |(treebank, version, filenames)|
   tb = PROIEL::Treebank.new
