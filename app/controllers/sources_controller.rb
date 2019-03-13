@@ -1,6 +1,6 @@
 class SourcesController < ApplicationController
   def index
-    sources = Source
+    sources = Source.where("gid LIKE 'torot:20180919:%' OR gid like 'iswoc:%' OR gid LIKE 'proiel:20180408:%'")
 
     render json: paginator(sources, lambda { |source| shared(source) })
   end

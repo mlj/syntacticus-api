@@ -1,6 +1,6 @@
 class TokensController < ApplicationController
   def index
-    tokens = Token
+    tokens = Token.where("sentence_gid LIKE 'torot:20180919:%' OR sentence_gid like 'iswoc:%' OR sentence_gid LIKE 'proiel:20180408:%'")
 
     %i(source language form lemma morphology part_of_speech relation information_status frame_id).each do |attr|
       if params[attr] and params[attr] != ''
