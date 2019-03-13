@@ -198,7 +198,7 @@ module TokenIndexer
     sentence_gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
 
     Token.create!(sentence_gid: sentence_gid,
-       citation: token.citation,
+       citation: token.citation || source.citation,
        language: source.language,
        form: token.form,
        lemma: token.lemma,
