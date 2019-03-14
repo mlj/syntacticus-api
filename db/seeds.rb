@@ -38,6 +38,15 @@ module PROIEL::Printing
 end
 
 module PROIEL::CSV
+  def self.read_tsv_as_hash(filename, &block)
+    {}.tap do |hash|
+      read_tsv(filename) do |row|
+        key, data = yield row
+        hash[key] = data
+      end
+    end
+  end
+
   def self.read_tsv(filename, &block)
     raise ArgumentError, 'filename expected' unless filename.is_a?(String)
     raise ArgumentError, 'file not found' unless File.exists?(filename)
@@ -58,6 +67,8 @@ module PROIEL::CSV
 end
 
 CHRONOLOGY = {}
+CHRONOLOGY.merge!(PROIEL::CSV.read_from_tsv_as_hash('../syntacticus-extra-data/torot-dates.tsv'))
+CHRONOLOGY.merge!(PROIEL::CSV.read_from_tsv_as_hash('../syntacticus-extra-data/proiel-dates.tsv'))
 
 PROIEL::CSV.read_csv('lib/dates.tsv', separator: "\t") do |row|
   CHRONOLOGY[row.id] = {
@@ -133,25 +144,34 @@ module DictionaryIndexer
   end
 end
 
-# TODO
-ORV_GLOSSES = {}
+class Glosses
+  def initialize
+    @glosses = {}
+  end
 
-# TODO
-PROIEL::CSV.read_tsv('../syntacticus-extra-data/orv-glosses.tsv') do |row|
-  key = ['orv', row.lemma, row.part_of_speech].join(',')
-  STDERR.puts "Warning: repeated gloss #{key}" if ORV_GLOSSES.key?(key)
-  ORV_GLOSSES[key] = {
-    eng: row.eng,
-    rus: row.rus,
-  }
+  def load!(language, filename)
+    new_glosses =
+      PROIEL::CSV.read_tsv_as_hash(filename) do |row|
+        [key(language, row.lemma, row.part_of_speech), row]
+      end
+
+    @glosses.merge!(new_glosses)
+  end
+
+  def get(language, lemma, part_of_speech)
+    @glosses[key(language, lemma, part_of_speech)] || {}
+  end
+
+  private
+
+  def key(language, lemma, part_of_speech)
+    [language, lemma, part_of_speech].map(&:to_s).join(',')
+  end
 end
 
 # TODO
-def get_glosses(language, lemma, part_of_speech)
-  key = [language, lemma, part_of_speech].join(',')
-
-  ORV_GLOSSES[key] || {}
-end
+ORV_GLOSSES = Glosses.new
+ORV_GLOSSES.load!(:orv, '../syntacticus-extra-data/orv-glosses.tsv')
 
 GLOBAL_STATE = {
   frame_id: nil
@@ -215,7 +235,7 @@ end
 
 def make_token_attributes(sentence, language = nil)
   sentence.tokens.map do |t|
-    glosses = language ? get_glosses(language, t.lemma, t.part_of_speech) : nil
+    glosses = language ? ORV_GLOSSES.get(language, t.lemma, t.part_of_speech) : nil
 
     m = {
         id: t.id,
