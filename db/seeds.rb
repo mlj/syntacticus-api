@@ -82,8 +82,6 @@ PROIEL::CSV.read_csv('lib/orv_text_dates_standard.csv', separator: ';') do |row|
     t: PROIEL::Chronology.midpoint(row.composition),
     m: PROIEL::Chronology.midpoint(row.manuscript),
   }
-rescue ArgumentError
-  STDERR.puts "Bad chronology #{row}"
 end
 
 module DictionaryIndexer
