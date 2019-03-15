@@ -6,7 +6,8 @@ require 'proiel'
 require 'proiel/valency'
 
 TREEBANKS = [
-  ['syntacticus', 20180303, Dir['../syntacticus-dictionaries/*.xml']],
+  #['syntacticus', 20180303, Dir['../syntacticus-dictionaries/*.xml']],
+  ['syntacticus', 20180920, Dir['../syntacticus-dictionaries/*.xml']],
   ['iswoc',       20160620, Dir['../syntacticus-depot/iswoc-20160620.xml']],
   ['proiel',      20170214, Dir['../syntacticus-depot/proiel-20170214.xml']],
   ['proiel',      20180408, Dir['../syntacticus-depot/proiel-20180408.xml']],
