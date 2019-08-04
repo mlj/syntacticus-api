@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   end
   resources :chunks, only: [:show]
   resources :aligned_chunks, only: [:show]
+  get "/robots.txt" => "robots_txts#show"
 end
