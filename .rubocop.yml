@@ -1,0 +1,13 @@
+inherit_from: .rubocop_todo.yml
+
+Naming/MethodName:
+  EnforcedStyle: snake_case
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
