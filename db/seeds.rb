@@ -21,10 +21,10 @@ ActiveRecord::Base.logger.level = :error
 
 module PROIEL::Printing
   def self.token_in_context(s, t)
-    n = s.tokens.each_with_index.find { |x, i| t == x }.last
+    n = s.tokens.each_with_index.find { |x, _i| t == x }.last
 
-    before = s.tokens.each_with_index.select { |x, i| i < n }.map { |x, _| x.printable_form }.join.strip
-    after  = s.tokens.each_with_index.select { |x, i| i > n }.map { |x, _| x.printable_form }.join.strip
+    before = s.tokens.each_with_index.select { |_x, i| i < n }.map { |x, _| x.printable_form }.join.strip
+    after  = s.tokens.each_with_index.select { |_x, i| i > n }.map { |x, _| x.printable_form }.join.strip
 
     [self.left_abbrev(before), self.right_abbrev(after)]
   end
@@ -39,7 +39,7 @@ module PROIEL::Printing
 end
 
 module PROIEL::CSV
-  def self.read_tsv_as_hash(filename, &block)
+  def self.read_tsv_as_hash(filename)
     {}.tap do |hash|
       read_tsv(filename) do |row|
         key, data = yield row
@@ -48,18 +48,18 @@ module PROIEL::CSV
     end
   end
 
-  def self.read_tsv(filename, &block)
+  def self.read_tsv(filename)
     raise ArgumentError, 'filename expected' unless filename.is_a?(String)
-    raise ArgumentError, 'file not found' unless File.exists?(filename)
+    raise ArgumentError, 'file not found' unless File.exist?(filename)
 
     CSV.foreach(filename, headers: true, encoding: 'utf-8', col_sep: "\t", quote_char: "\b") do |row|
       yield OpenStruct.new(row.to_h.map { |k, v| [k.downcase, v] }.to_h)
     end
   end
 
-  def self.read_csv(filename, separator: ',', quote_char: '"', &block)
+  def self.read_csv(filename, separator: ',', quote_char: '"')
     raise ArgumentError, 'filename expected' unless filename.is_a?(String)
-    raise ArgumentError, 'file not found' unless File.exists?(filename)
+    raise ArgumentError, 'file not found' unless File.exist?(filename)
 
     CSV.foreach(filename, headers: true, encoding: 'utf-8', col_sep: separator, quote_char: quote_char) do |row|
       yield OpenStruct.new(row.to_h.map { |k, v| [k.downcase, v] }.to_h)
@@ -218,7 +218,6 @@ module TokenIndexer
   def self.index!(treebank, version, source, sentence, token)
     abbrev_text_before, abbrev_text_after = PROIEL::Printing.token_in_context(sentence, token)
     frame_id = TOKEN_FRAME_MAP[token.id]
-    source_gid = GlobalIdentifiers.source_gid(treebank, version, source.id)
     sentence_gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
 
     Token.create!(sentence_gid: sentence_gid,
@@ -313,7 +312,6 @@ module AlignedSourceIndexer
       left =
         row[:original].map do |sentence_id|
           sentence = alignment.treebank.find_sentence(sentence_id)
-          gid = GlobalIdentifiers.sentence_gid(treebank, version, alignment.id, sentence.id)
           token_attributes = make_token_attributes(sentence)
           # FIXME: we don't need all these attributes in token_attributes
           token_attributes
@@ -322,7 +320,6 @@ module AlignedSourceIndexer
       right =
         row[:translation].map do |sentence_id|
           sentence = source.treebank.find_sentence(sentence_id)
-          gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
           token_attributes = make_token_attributes(sentence)
           # FIXME: we don't need all these attributes in token_attributes
           token_attributes
@@ -477,7 +474,7 @@ end
 TREEBANKS.each do |(treebank, version, filenames)|
   tb = PROIEL::Treebank.new
 
-  filenames.each_with_index do |filename, i|
+  filenames.each do |filename|
     puts "Loading #{filename}..."
     tb.load_from_xml(filename)
   end

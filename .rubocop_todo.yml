@@ -1,34 +1,3 @@
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/DeprecatedClassMethods:
-  Exclude:
-    - 'db/seeds.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/ScriptPermission:
-  Exclude:
-    - 'db/alignment_precompute.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'db/seeds.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods.
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'db/seeds.rb'
-
-# Offense count: 3
-Lint/UselessAssignment:
-  Exclude:
-    - 'db/seeds.rb'
-
 # Offense count: 18
 # Configuration parameters: IgnoredMethods.
 Metrics/AbcSize:
