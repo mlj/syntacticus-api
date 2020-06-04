@@ -6,7 +6,7 @@ require 'proiel'
 require 'proiel/valency'
 
 TREEBANKS = [
-  #['syntacticus', 20180303, Dir['../syntacticus-dictionaries/*.xml']],
+  # ['syntacticus', 20180303, Dir['../syntacticus-dictionaries/*.xml']],
   ['syntacticus', 20180920, Dir['../syntacticus-dictionaries/*.xml']],
   ['iswoc',       20160620, Dir['../syntacticus-depot/iswoc-20160620.xml']],
   ['proiel',      20170214, Dir['../syntacticus-depot/proiel-20170214.xml']],
@@ -91,7 +91,12 @@ module DictionaryIndexer
     puts "Indexing #{gid}..."
 
     Dictionary.transaction do
-      d = Dictionary.create!(gid: gid, language: dictionary.language, license: 'CC BY-NC-SA 4.0', lemma_count: dictionary.n)
+      d = Dictionary.create!(
+        gid: gid,
+        language: dictionary.language,
+        license: 'CC BY-NC-SA 4.0',
+        lemma_count: dictionary.n
+      )
 
       pbar = ProgressBar.create progress_mark: 'X', remainder_mark: ' ', title: language, total: dictionary.n
       dictionary.lemmata.each do |lemma, x|
@@ -123,7 +128,7 @@ module DictionaryIndexer
                   GLOBAL_STATE[:frame_id] += 1
                   frame_id = GLOBAL_STATE[:frame_id]
                   idrefs.each { |t| TOKEN_FRAME_MAP[t.to_i] = frame_id }
-                  [flags, { frame_id: frame_id, n: idrefs.length } ]
+                  [flags, { frame_id: frame_id, n: idrefs.length }]
                 end.to_h
 
               data[:valency] << { arguments: frame[:arguments], partitions: simplified_partitions }
@@ -217,18 +222,17 @@ module TokenIndexer
     sentence_gid = GlobalIdentifiers.sentence_gid(treebank, version, source.id, sentence.id)
 
     Token.create!(sentence_gid: sentence_gid,
-       citation: token.citation || source.citation,
-       language: source.language,
-       form: token.form,
-       lemma: token.lemma,
-       part_of_speech: token.part_of_speech,
-       morphology: token.morphology,
-       relation: token.relation,
-       information_status: token.information_status,
-       abbrev_text_before: abbrev_text_before,
-       abbrev_text_after: abbrev_text_after,
-       frame_id: frame_id
-    )
+                  citation: token.citation || source.citation,
+                  language: source.language,
+                  form: token.form,
+                  lemma: token.lemma,
+                  part_of_speech: token.part_of_speech,
+                  morphology: token.morphology,
+                  relation: token.relation,
+                  information_status: token.information_status,
+                  abbrev_text_before: abbrev_text_before,
+                  abbrev_text_after: abbrev_text_after,
+                  frame_id: frame_id)
   end
 end
 
@@ -237,14 +241,14 @@ def make_token_attributes(sentence, language = nil)
     glosses = language ? ORV_GLOSSES.get(language, t.lemma, t.part_of_speech) : nil
 
     m = {
-        id: t.id,
-        form: t.form,
-        lemma: t.lemma,
-        part_of_speech: t.part_of_speech,
-        morphology: t.morphology,
-        head_id: t.head_id,
-        relation: t.relation,
-      }
+      id: t.id,
+      form: t.form,
+      lemma: t.lemma,
+      part_of_speech: t.part_of_speech,
+      morphology: t.morphology,
+      head_id: t.head_id,
+      relation: t.relation,
+    }
 
     m[:glosses] = glosses unless glosses.nil? or glosses.empty?
     m[:presentation_after] = t.presentation_after unless t.presentation_after.nil?

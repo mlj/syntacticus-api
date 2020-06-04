@@ -19,9 +19,9 @@ class SentencesController < ApplicationController
         if l
           l = l.split('#')
           t.merge({
-            'lemma' => l[0],
-            'variant' => l[1],
-          })
+                    'lemma' => l[0],
+                    'variant' => l[1],
+                  })
         else
           t
         end

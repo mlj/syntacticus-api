@@ -10,9 +10,9 @@ class SourcesController < ApplicationController
     raise ActiveRecord::RecordNotFound if source.nil?
 
     render json: shared(source).merge({
-      chunks: JSON.parse(source.chunks),
-      alignment: JSON.parse(source.alignment),
-    })
+                                        chunks: JSON.parse(source.chunks),
+                                        alignment: JSON.parse(source.alignment),
+                                      })
   end
 
   private

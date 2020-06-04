@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20170711162858) do
-
   create_table "aligned_chunks", force: :cascade do |t|
     t.integer "source_id"
     t.text "data"
@@ -20,7 +19,7 @@ ActiveRecord::Schema.define(version: 20170711162858) do
   create_table "aligned_graphs", force: :cascade do |t|
     t.text "sentence_gid"
     t.text "data"
-    t.index ["sentence_gid"], name: "index_aligned_graphs_on_gid" #FIXME: why not?, unique: true
+    t.index ["sentence_gid"], name: "index_aligned_graphs_on_gid" # FIXME: why not?, unique: true
   end
 
   create_table "chunks", force: :cascade do |t|
@@ -94,5 +93,4 @@ ActiveRecord::Schema.define(version: 20170711162858) do
     t.index ["morphology"], name: "index_tokes_on_morphology"
     t.index ["frame_id"], name: "index_tokes_on_frame_id"
   end
-
 end

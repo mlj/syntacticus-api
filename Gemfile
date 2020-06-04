@@ -5,7 +5,6 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
 # Use sqlite3 as the database for Active Record
@@ -13,7 +12,7 @@ gem 'sqlite3'
 # Use Puma as the app server
 gem 'puma', '~> 3.12'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-#gem 'jbuilder', '~> 2.5'
+# gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -42,7 +41,7 @@ gem 'rack-attack'
 gem 'rack-cors'
 
 # For the database seeder
-#gem 'proiel', '~> 1.3'
+# gem 'proiel', '~> 1.3'
+gem 'colorize'
 gem 'proiel', git: 'https://github.com/proiel/proiel', ref: '24dbafa3004720d936894349eb3926c8c0f8a7c1'
 gem 'ruby-progressbar'
-gem 'colorize'

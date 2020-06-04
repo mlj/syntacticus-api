@@ -26,18 +26,20 @@ class TokensController < ApplicationController
 
     tokens = tokens.where('morphology LIKE ?', morphology) unless morphology.nil?
 
-    #if params[:ids]
+    # if params[:ids]
     #  ids = params[:ids].split(',').map(&:to_i)
     #  t = t.where('xml_id IN (?)', ids)
-    #end
+    # end
 
-    render json: paginator(tokens, lambda { |token| {
-      sentence: token.sentence_gid,
-      citation: token.citation,
-      language: token.language,
-      form: token.form,
-      abbrev_text_before: token.abbrev_text_before,
-      abbrev_text_after: token.abbrev_text_after,
-    }})
+    render json: paginator(tokens, lambda { |token|
+                                     {
+                                       sentence: token.sentence_gid,
+                                       citation: token.citation,
+                                       language: token.language,
+                                       form: token.form,
+                                       abbrev_text_before: token.abbrev_text_before,
+                                       abbrev_text_after: token.abbrev_text_after,
+                                     }
+                                   })
   end
 end
