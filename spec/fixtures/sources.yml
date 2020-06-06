@@ -1,0 +1,36 @@
+pal-agr:
+  id: 36
+  gid: proiel:20180408:pal-agr
+  title: Opus agriculturae
+  author: Palladius
+  language: lat
+  license: CC BY-NC-SA 4.0
+  citation: Pal. Agr.
+  sentence_count: 955
+  token_count: 12148
+  chunks: "[2037,2038,2039,2040,2041,2042,2043,2044,2045,2046,2047,2048,2049,2050,2051,2052,2053,2054,2055]"
+  alignment: "{}"
+per-aeth:
+  id: 37
+  gid: proiel:20180408:per-aeth
+  title: Peregrinatio Aetheriae
+  author:
+  language: lat
+  license: CC BY-NC-SA 4.0
+  citation: Per. Aeth.
+  sentence_count: 921
+  token_count: 18356
+  chunks: "[2056,2057,2058,2059,2060,2061,2062,2063,2064,2065,2066,2067,2068,2069,2070,2071,2072,2073,2074,2075,2076,2077,2078,2079,2080]"
+  alignment: "{}"
+cic-off:
+  id: 30
+  gid: proiel:20180408:cic-off
+  title: De officiis
+  author: Cicero
+  language: lat
+  license: CC BY-NC-SA 4.0
+  citation: Cic. Off.
+  sentence_count: 565
+  token_count: 10644
+  chunks: "[1262,1263,1264,1265,1266,1267,1268,1269,1270,1271,1272,1273,1274,1275,1276]"
+  alignment: "{}"
