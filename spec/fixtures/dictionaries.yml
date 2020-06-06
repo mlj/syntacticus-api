@@ -1,0 +1,18 @@
+lat:
+  id: 1
+  gid: syntacticus:20180920:lat
+  language: lat
+  license: CC BY-NC-SA 4.0
+  lemma_count: 7923
+got:
+  id: 2
+  gid: syntacticus:20180920:got
+  language: got
+  license: CC BY-NC-SA 4.0
+  lemma_count: 3424
+ang:
+  id: 3
+  gid: syntacticus:20180920:ang
+  language: ang
+  license: CC BY-NC-SA 4.0
+  lemma_count: 2971

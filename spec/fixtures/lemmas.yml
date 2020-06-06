@@ -1,0 +1,16 @@
+arena:
+  id: 1
+  dictionary_id: 1
+  language: lat
+  lemma: "(h)arena"
+  part_of_speech: Nb
+  glosses: "{}"
+  data: '{"language":"lat","lemma":"(h)arena","part_of_speech":"Nb","distribution":[{"id":"latin-nt","n":4,"chronology":{"t":382}}],"paradigm":{"-s---fa--i":{"harenam":2},"-s---fn--i":{"harena":2}}}'
+aaron:
+  id: 2
+  dictionary_id: 1
+  language: lat
+  lemma: Aaron
+  part_of_speech: Ne
+  glosses: "{}"
+  data: '{"language":"lat","lemma":"Aaron","part_of_speech":"Ne","distribution":[{"id":"latin-nt","n":2,"chronology":{"t":382}},{"id":"per-aeth","n":3,"chronology":{"t":382}}],"paradigm":{"---------n":{"Aaron":5}}}'
