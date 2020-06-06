@@ -13,7 +13,7 @@ class SentencesController < ApplicationController
       language: sentence.language,
       citation: sentence.citation,
       # FIXME
-      tokens: JSON.parse(sentence.tokens).map { |t|
+      tokens: JSON.parse(sentence.tokens).map do |t|
         l = t['lemma']
 
         if l
@@ -25,7 +25,7 @@ class SentencesController < ApplicationController
         else
           t
         end
-      },
+      end,
       previous_gid: sentence.previous_gid,
       next_gid: sentence.next_gid,
       source: {
@@ -34,7 +34,7 @@ class SentencesController < ApplicationController
         title: sentence.source.title,
         author: sentence.source.author,
         license: sentence.source.license,
-      }
+      },
     }
   end
 end

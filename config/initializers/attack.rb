@@ -1,6 +1,8 @@
-class Rack::Attack
-  throttle('req/ip', limit: 1000, period: 10.minutes) do |req|
-    req.ip if req.path.starts_with?('/')
+module Rack
+  class Attack
+    throttle('req/ip', limit: 1000, period: 10.minutes) do |req|
+      req.ip if req.path.starts_with?('/')
+    end
   end
 end
 

@@ -2,10 +2,8 @@ class TokensController < ApplicationController
   def index
     tokens = Token.where("sentence_gid LIKE 'torot:20180919:%' OR sentence_gid like 'iswoc:%' OR sentence_gid LIKE 'proiel:20180408:%'")
 
-    %i(source language form lemma morphology part_of_speech relation information_status frame_id).each do |attr|
-      if params[attr] and params[attr] != ''
-        tokens = tokens.where(attr => params[attr])
-      end
+    %i[source language form lemma morphology part_of_speech relation information_status frame_id].each do |attr|
+      tokens = tokens.where(attr => params[attr]) if params[attr] and params[attr] != ''
     end
 
     # Morphology can be tested for directly and we may already have a where
@@ -17,7 +15,7 @@ class TokensController < ApplicationController
     # rows anyway.
     morphology = nil
 
-    %w(person number tense mood voice gender case degree strength inflection).each_with_index do |attr, i|
+    %w[person number tense mood voice gender case degree strength inflection].each_with_index do |attr, i|
       if params[attr] and params[attr] != ''
         morphology ||= '__________'
         morphology[i] = params[attr]

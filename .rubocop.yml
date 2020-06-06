@@ -9,5 +9,40 @@ Style/StringLiterals:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: nested
+
+Style/AndOr:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
 Layout/LineLength:
-  Max: 130
+  Enabled: false
+
+Metrics/BlockLength:
+  CountComments: false
+  Max: 100
+
+Metrics/MethodLength:
+  CountComments: false
+  Max: 100
+
+Metrics/AbcSize:
+  Max: 54
+
+Metrics/CyclomaticComplexity:
+  Max: 8
+
+Metrics/PerceivedComplexity:
+  Max: 8
