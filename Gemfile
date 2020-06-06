@@ -38,9 +38,3 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rack-attack'
 gem 'rack-cors'
-
-# For the database seeder
-# gem 'proiel', '~> 1.3'
-gem 'colorize'
-gem 'proiel', git: 'https://github.com/proiel/proiel', ref: '24dbafa3004720d936894349eb3926c8c0f8a7c1'
-gem 'ruby-progressbar'
