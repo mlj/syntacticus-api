@@ -10,6 +10,7 @@
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
+/db/*.sqlite3-*
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -17,7 +18,15 @@
 !/log/.keep
 !/tmp/.keep
 
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
 .byebug_history
 
-# Ignore encrypted secrets key file.
-config/secrets.yml.key
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# For now, syntacticus-api does not include any credential settings.
+config/credentials.yml.enc

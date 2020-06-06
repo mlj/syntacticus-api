@@ -3,7 +3,7 @@ describe 'Sources API' do
 
   it 'sends a paginated list of sources' do
     get '/sources'
-    expect(response).to be_success
+    expect(response).to be_successful
     json = JSON.parse(response.body)
 
     expect(json['offset']).to eq(0)
@@ -14,7 +14,7 @@ describe 'Sources API' do
 
   it 'sends a source when requested by GID' do
     get '/sources/proiel:20180408:pal-agr'
-    expect(response).to be_success
+    expect(response).to be_successful
     json = JSON.parse(response.body)
 
     expect(json['id']).to eq('proiel:20180408:pal-agr')

@@ -11,8 +11,12 @@ bundle
 bundle exec rspec
 ```
 
-To run in production
+To run in production you first need to configure credentials. The repository does not currently contain any default credentials:
 
 ```sh
-SECRET_KEY_BASE=<my-key> bin/rails s -e production -p 3456
+bin/rails credentials:edit
+```
+
+```sh
+bin/rails s -e production -p 3456
 ```
