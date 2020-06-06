@@ -10,4 +10,4 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 Layout/LineLength:
-  Max: 120
+  Max: 130

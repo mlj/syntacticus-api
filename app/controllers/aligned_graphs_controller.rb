@@ -49,7 +49,8 @@ class AlignedGraphsController < ApplicationController
     a = data['a']
 
     graph = GraphAdapter.new(l, r, a)
-    image = PROIEL::Visualization::Graphviz.generate('aligned-modern', graph, :svg, direction: params[:direction] || 'TD')
+    image = PROIEL::Visualization::Graphviz.generate('aligned-modern', graph, :svg,
+                                                     direction: params[:direction] || 'TD')
     send_data(image, type: 'image/svg', disposition: 'inline', filename: "#{params[:id]}-aligned.svg")
   end
 end
