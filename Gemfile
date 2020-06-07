@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'proiel'
 gem 'puma', '~> 4.1'
 gem 'rack-attack'
 gem 'rack-cors'
