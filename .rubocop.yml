@@ -1,10 +1,10 @@
 Naming/MethodName:
   EnforcedStyle: snake_case
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-
 Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/LineLength:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
@@ -25,8 +25,11 @@ Style/Documentation:
 Style/NumericLiterals:
   Enabled: false
 
-Layout/LineLength:
+Style/SymbolProc:
   Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 
 Metrics/BlockLength:
   CountComments: false
