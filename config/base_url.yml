@@ -1,0 +1,6 @@
+development:
+  base_url: /
+production:
+  base_url: /syntacticus-api
+test:
+  base_url: /
