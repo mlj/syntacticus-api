@@ -25,6 +25,9 @@ Style/Documentation:
 Style/NumericLiterals:
   Enabled: false
 
+Style/RedundantFetchBlock:
+  Enabled: false
+
 Style/SymbolProc:
   Enabled: false
 
@@ -43,7 +46,7 @@ Metrics/AbcSize:
   Max: 54
 
 Metrics/CyclomaticComplexity:
-  Max: 8
+  Max: 9
 
 Metrics/PerceivedComplexity:
-  Max: 8
+  Max: 9
