@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'proiel'
-gem 'puma', '~> 4.1'
+gem 'puma', '~> 4.3'
 gem 'rack-attack'
 gem 'rack-cors'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.4'
