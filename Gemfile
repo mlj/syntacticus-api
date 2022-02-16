@@ -9,5 +9,4 @@ gem 'sqlite3', '~> 1.4'
 
 group :development do
   gem 'rspec-rails'
-  gem 'rubocop'
 end
