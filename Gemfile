@@ -4,7 +4,7 @@ gem 'proiel'
 gem 'puma'
 gem 'rack-attack'
 gem 'rack-cors'
-gem 'rails', '~> 6.0.3', '>= 6.0.3.4'
+gem 'rails', '~> 6.1.7.1'
 gem 'sqlite3', '~> 1.4'
 
 group :development do
